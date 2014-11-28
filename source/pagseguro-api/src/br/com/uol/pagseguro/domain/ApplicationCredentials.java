@@ -55,7 +55,35 @@ public class ApplicationCredentials extends Credentials {
      * PagSeguro authorization code
      */
     private String authorizationCode;
+    
+    /**
+     * Initializes a newly created instance of this type with the specified arguments
+     * 
+     * @param productionAppId
+     *            the production pagseguro application ID. Max length 60 characters.
+     * @param productionAppKey
+     *            the production pagseguro application Key. A sequence of 32 characters
+     * @param sandboxAppId
+     *            the sandbox pagseguro application ID. Max length 60 characters.
+     * @param sandboxAppKey
+     *            the sandbox pagseguro application Key. A sequence of 32 characters
+     */
+    public ApplicationCredentials(String productionAppId, String productionAppKey, String sandboxAppId, String sandboxAppKey)
+    		throws PagSeguroServiceException {
 
+    	this.productionAppId = productionAppId.trim();
+        this.productionAppKey = productionAppKey.trim();
+        this.sandboxAppId = sandboxAppId.trim();
+        this.sandboxAppKey = sandboxAppKey.trim();
+    	
+    	if (productionAppId == null || "".equals(productionAppId.trim()) && productionAppKey == null || "".equals(productionAppKey.trim())
+        		|| sandboxAppId == null || "".equals(sandboxAppId.trim()) || sandboxAppKey == null || "".equals(sandboxAppKey.trim())) {
+            throw new PagSeguroServiceException("Application Credentials not set correctly.");
+        }
+
+        
+    }
+    
     /**
      * Initializes a newly created instance of this type with the specified arguments
      * 
@@ -64,98 +92,9 @@ public class ApplicationCredentials extends Credentials {
      * @param productionAppKey
      *            the production pagseguro application key. A sequence of 32 characters
      */
-    public AccountCredentials(String productionAppId, String productionAppKey) throws PagSeguroServiceException {
+    public ApplicationCredentials(String productionAppId, String productionAppKey) throws PagSeguroServiceException {
 
-        if (productionAppId == null || "".equals(productionAppId.trim())
-        		|| productionAppKey == null || "".equals(productionAppKey.trim())) {
-            throw new PagSeguroServiceException("Application Credentials not set.");
-        }
-
-        this.productionAppId = productionAppId.trim();
-        this.productionAppKey = productionAppKey.trim();
-    }
-    
-    /**
-     * Initializes a newly created instance of this type with the specified arguments
-     * 
-     * @param productionAppId
-     *            the production pagseguro application ID. Max length 60 characters.
-     * @param productionAppKey
-     *            the production pagseguro application Key. A sequence of 32 characters
-     * @param authorizationCode
-     *            the pagseguro authorization Code. A sequence of 32 characters
-     */
-    public AccountCredentials(String productionAppId, String productionAppKey, String authorizationCode) throws PagSeguroServiceException {
-
-        if (productionAppId == null || "".equals(productionAppId.trim())
-        		|| productionAppKey == null || "".equals(productionAppKey.trim())
-        		|| authorizationCode == null || "".equals(authorizationCode.trim())) {
-            throw new PagSeguroServiceException("Application Credentials not set.");
-        }
-
-        this.productionAppId = productionAppId.trim();
-        this.productionAppKey = productionAppKey.trim();
-        this.authorizationCode = authorizationCode.trim();
-    }
-    
-    /**
-     * Initializes a newly created instance of this type with the specified arguments
-     * 
-     * @param productionAppId
-     *            the production pagseguro application ID. Max length 60 characters.
-     * @param productionAppKey
-     *            the production pagseguro application Key. A sequence of 32 characters
-     * @param sandboxAppId
-     *            the sandbox pagseguro application ID. Max length 60 characters.
-     * @param sandboxAppKey
-     *            the sandbox pagseguro application Key. A sequence of 32 characters
-     */
-    public AccountCredentials(String productionAppId, String productionAppKey, String sandboxAppId, String sandboxAppKey)
-    		throws PagSeguroServiceException {
-
-    	if (productionAppId == null || "".equals(productionAppId.trim())
-        		|| productionAppKey == null || "".equals(productionAppKey.trim())
-        		|| sandboxAppId == null || "".equals(sandboxAppId.trim())
-        		|| sandboxAppKey == null || "".equals(sandboxAppKey.trim())) {
-            throw new PagSeguroServiceException("Application Credentials not set correctly.");
-        }
-
-        this.productionAppId = productionAppId.trim();
-        this.productionAppKey = productionAppKey.trim();
-        this.sandboxAppId = sandboxAppId.trim();
-        this.sandboxAppKey = sandboxAppKey.trim();
-    }
-
-    /**
-     * Initializes a newly created instance of this type with the specified arguments
-     * 
-     * @param productionAppId
-     *            the production pagseguro application ID. Max length 60 characters.
-     * @param productionAppKey
-     *            the production pagseguro application Key. A sequence of 32 characters
-     * @param sandboxAppId
-     *            the sandbox pagseguro application ID. Max length 60 characters.
-     * @param sandboxAppKey
-     *            the sandbox pagseguro application Key. A sequence of 32 characters
-     * @param authorizationCode
-     *            the pagseguro authorization Code. A sequence of 32 characters
-     */
-    public AccountCredentials(String productionAppId, String productionAppKey, String sandboxAppId, String sandboxAppKey, String authorizationCode)
-    		throws PagSeguroServiceException {
-
-    	if (productionAppId == null || "".equals(productionAppId.trim())
-        		|| productionAppKey == null || "".equals(productionAppKey.trim())
-        		|| sandboxAppId == null || "".equals(sandboxAppId.trim())
-        		|| sandboxAppKey == null || "".equals(sandboxAppKey.trim())
-        		|| authorizationCode == null || "".equals(authorizationCode.trim())) {
-            throw new PagSeguroServiceException("Application Credentials not set correctly.");
-        }
-
-        this.productionAppId = productionAppId.trim();
-        this.productionAppKey = productionAppKey.trim();
-        this.sandboxAppId = sandboxAppId.trim();
-        this.sandboxAppKey = sandboxAppKey.trim();
-        this.authorizationCode = authorizationCode.trim();
+        this(productionAppId, productionAppKey, null, null);
     }
     
     /**
@@ -244,11 +183,9 @@ public class ApplicationCredentials extends Credentials {
             attributeMap.put("appKey", this.productionAppKey);
         }
         
-        if (this.authorizationCode != null || !"".equals(this.authorizationCode)) {
+        if (this.authorizationCode != null && !"".equals(this.authorizationCode)) {
         	attributeMap.put("authorizationCode", this.authorizationCode);
         }
-        
-        
 
         return attributeMap;
 
@@ -259,7 +196,7 @@ public class ApplicationCredentials extends Credentials {
      */
     @Override
     public String toString() {
-        return this.productionAppId + " (production app Id) - " + this.productionAppkey + " (production app key) - "
+        return this.productionAppId + " (production app Id) - " + this.productionAppKey + " (production app key) - "
         		+ this.sandboxAppId + " (sandbox app Id) - " + this.sandboxAppKey + " (sandbox app key) - "
         		+ this.authorizationCode + " (authorization Code)";
     }

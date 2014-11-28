@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import br.com.uol.pagseguro.domain.AccountCredentials;
+import br.com.uol.pagseguro.domain.ApplicationCredentials;
 import br.com.uol.pagseguro.exception.PagSeguroServiceException;
 
 /**
@@ -146,7 +147,7 @@ public class PagSeguroConfig {
 
         }
 
-        return new ApplicationCredentials(productionAppId, productionAppKey, sandboxAppId, sandboxAppId);
+        return new ApplicationCredentials(productionAppId, productionAppKey, sandboxAppId, sandboxAppKey);
     }
 
     /**

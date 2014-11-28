@@ -18,37 +18,43 @@
 
 package br.com.uol.pagseguro.example;
 
-import br.com.uol.pagseguro.domain.Transaction;
+import java.util.List;
+
+import br.com.uol.pagseguro.domain.Authorization;
+import br.com.uol.pagseguro.domain.Permission;
 import br.com.uol.pagseguro.exception.PagSeguroServiceException;
 import br.com.uol.pagseguro.properties.PagSeguroConfig;
 import br.com.uol.pagseguro.service.NotificationService;
 
-public class ReceiveNotifications {
+public class ReceiveAuthorizationNotifications {
 
     public static void main(String[] args) {
 
         // The notificationCode received by your system
-        String notificationCode = "83C949615C535C53ECEAA453CF8848D59180";
+        String notificationCode = "FF422A1EE6AEE6AEEFB444AB9F963C2EF0B7";
 
-        Transaction transaction = null;
+        Authorization authorization = null;
 
         try {
 
-            transaction = NotificationService.checkTransaction(PagSeguroConfig.getAccountCredentials(),
+            authorization = NotificationService.checkAuthorization(PagSeguroConfig.getApplicationCredentials(),
                     notificationCode);
 
         } catch (PagSeguroServiceException e) {
             System.err.println(e.getMessage());
         }
 
-        if (transaction != null) {
-            System.out.println("code: " + transaction.getCode());
-            System.out.println("reference: " + transaction.getReference());
-            System.out.println("status: " + transaction.getStatus());
+        if (authorization != null) {
+            System.out.println("code: " + authorization.getCode());
+            System.out.println("reference: " + authorization.getReference());
+            List<Permission> permissions = authorization.getPermissions();
+            for (Permission permission : permissions) {
+				System.out.println("Permission " + permission.getPermission() + " - Status: " + permission.getStatus());
+			}
         }
 
     }
 
-    private ReceiveNotifications() {
+    private ReceiveAuthorizationNotifications() {
     }
 }
