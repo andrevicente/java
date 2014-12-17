@@ -18,6 +18,7 @@
 
 package br.com.uol.pagseguro.example.application;
 
+import java.util.Calendar;
 import java.util.List;
 
 import br.com.uol.pagseguro.domain.Authorization;
@@ -33,8 +34,20 @@ public class SearchAuthorizationsByDate {
         List<Authorization> authorizations = null; 
 
         try {
+        	
+        	Calendar initialDate = Calendar.getInstance();
+            initialDate.set(2014, Calendar.NOVEMBER, 01, 0, 00);
 
-        	authorizations = AuthorizationSearchService.searchByDate(PagSeguroConfig.getApplicationCredentials(), null, null, 0, 0);
+            Calendar finalDate = Calendar.getInstance();
+            finalDate.set(2014, Calendar.NOVEMBER, 22, 13, 00);
+
+            Integer page = Integer.valueOf(1);
+
+            Integer maxPageResults = Integer.valueOf(10);
+            
+            // Set your account credentials on src/pagseguro-config.properties
+        	authorizations = AuthorizationSearchService.searchByDate(PagSeguroConfig.getApplicationCredentials(),
+                    initialDate.getTime(), finalDate.getTime(), page, maxPageResults);
 
         } catch (PagSeguroServiceException e) {
             System.err.println(e.getMessage());

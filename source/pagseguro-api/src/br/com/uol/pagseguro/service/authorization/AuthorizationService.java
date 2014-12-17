@@ -82,7 +82,7 @@ public class AuthorizationService {
         ConnectionData connectionData = new ConnectionData(credentials);
 
         Map<Object, Object> data = AuthorizationRequestParser.getData(authorization);
-
+        
         String url = AuthorizationService.buildAuthorizationRequestUrl(connectionData);
 
         HttpConnection connection = new HttpConnection();

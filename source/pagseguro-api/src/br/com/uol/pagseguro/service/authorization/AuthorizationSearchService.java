@@ -1,6 +1,7 @@
 package br.com.uol.pagseguro.service.authorization;
 
 import java.net.HttpURLConnection;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +30,11 @@ public class AuthorizationSearchService {
     private static Log log = new Log(TransactionSearchService.class);
     
     /**
+     * @var DATE_FORMAT
+     */
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm"; // "2011-04-01T08:30"
+    
+    /**
      * @var String
      */
     private static final String SEARCH_BY_CODE = "AuthorizationSearchService.SearchByCode(authorizationCode= %1s) - error %2s";
@@ -41,12 +47,12 @@ public class AuthorizationSearchService {
     /**
      * @var String
      */
-    private static final String SEARCH_ALL = "AuthorizationSearchService.SearchAll() - error %s";
+    private static final String SEARCH_BY_DATE = "AuthorizationSearchService.SearchAll() - error %s";
     
     /**
      * @var String
      */
-    private static final String SEARCH_ALL_BEGIN = "AuthorizationSearchService.SearchAll() - begin";
+    private static final String SEARCH_BY_DATE_BEGIN = "AuthorizationSearchService.SearchAll() - begin";
     
     /**
      * Build Search Url By Code
@@ -62,19 +68,33 @@ public class AuthorizationSearchService {
     }
     
     /**
-     * Build Search All
+     * Build Search byDate
      * 
      * @param connectionData
-     * @param resultsPerPage 
-     * @param pageNumber 
-     * @param finalDate 
      * @param initialDate 
+     * @param finalDate
+     * @param pageNumber
+     * @param resultsPerPage
      * @return
      * @throws PagSeguroServiceException
      */
-    private static String buildSearchUrlByDate(ConnectionData connectionData, Date initialDate, Date finalDate, int pageNumber, int resultsPerPage)
+    private static String buildSearchUrlByDate(ConnectionData connectionData, String initialDate, String finalDate, Integer pageNumber, Integer resultsPerPage)
             throws PagSeguroServiceException {
-        return connectionData.getWSAuthorizationFindByDateUrl() + "?" + connectionData.getCredentialsUrlQuery();
+    	
+    	StringBuilder sb = new StringBuilder();
+        sb.append(connectionData.getWSAuthorizationFindByDateUrl() + "?" + connectionData.getCredentialsUrlQuery());
+        sb.append("&initialDate=" + (initialDate != null ? initialDate : ""));
+        sb.append("&finalDate=" + (finalDate != null ? finalDate : ""));
+
+        if (pageNumber != null) {
+            sb.append("&page=" + pageNumber);
+        }
+
+        if (resultsPerPage != null) {
+            sb.append("&maxPageResults=" + resultsPerPage);
+        }
+    	
+        return sb.toString();
     }
     
     /**
@@ -123,15 +143,18 @@ public class AuthorizationSearchService {
      */
     public static List<Authorization> searchByDate(Credentials credentials, Date initialDate, Date finalDate, int pageNumber, int resultsPerPage) throws PagSeguroServiceException {
     	
-    	AuthorizationSearchService.log.info(String.format(AuthorizationSearchService.SEARCH_ALL_BEGIN));
+    	AuthorizationSearchService.log.info(String.format(AuthorizationSearchService.SEARCH_BY_DATE_BEGIN));
+    	
+    	String dtInitial = AuthorizationSearchService.formatDate(initialDate);
+        String dtFinal = AuthorizationSearchService.formatDate(finalDate);
 
     	List<Authorization> authorizations = null;
     	
         ConnectionData connectionData = new ConnectionData(credentials);
-        String authorizationSearchURL = AuthorizationSearchService.buildSearchUrlByDate(connectionData, initialDate, finalDate, pageNumber, resultsPerPage);
+        String authorizationSearchURL = AuthorizationSearchService.buildSearchUrlByDate(connectionData, dtInitial, dtFinal, pageNumber, resultsPerPage);
         
         HttpURLConnection response = AuthorizationSearchService.searchAuthorization(credentials, authorizationSearchURL, 
-        		connectionData.getServiceTimeout(), connectionData.getCharset(), AuthorizationSearchService.SEARCH_ALL);
+        		connectionData.getServiceTimeout(), connectionData.getCharset(), AuthorizationSearchService.SEARCH_BY_DATE);
         
         try {
         	
@@ -143,7 +166,7 @@ public class AuthorizationSearchService {
 			response.disconnect();
 		}
         
-        AuthorizationSearchService.log.info(String.format(AuthorizationSearchService.SEARCH_ALL, authorizations.toString()));
+        AuthorizationSearchService.log.info(String.format(AuthorizationSearchService.SEARCH_BY_DATE, authorizations.toString()));
         
         return authorizations;
         
@@ -199,6 +222,9 @@ public class AuthorizationSearchService {
     
     }
     
-    
+    private static String formatDate(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat(AuthorizationSearchService.DATE_FORMAT);
+        return sdf.format(date);
+    }    
 
 }
