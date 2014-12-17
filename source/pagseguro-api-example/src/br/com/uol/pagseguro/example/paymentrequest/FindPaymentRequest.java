@@ -22,7 +22,13 @@ public class FindPaymentRequest {
 
         try {
 
-            // Set your account credentials on src/pagseguro-config.properties
+        	/* Set your account credentials on src/pagseguro-config.properties
+			 * You can create an payment using an application credential and set an authorizationCode 
+			 * ApplicationCredentials applicationCredentials = PagSeguroConfig.getApplicationCredentials();
+             * applicationCredentials.setAuthorizationCode("your_authorizationCode");
+             * String paymentRequestTransaction = PaymentRequestService.findByCode(applicationCredentials));
+			 */
+        	
             paymentRequestTransaction = PaymentRequestService.findByCode(PagSeguroConfig.getAccountCredentials(),
                     paymentRequestCode);
 

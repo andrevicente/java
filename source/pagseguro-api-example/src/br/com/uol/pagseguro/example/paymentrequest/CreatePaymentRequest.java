@@ -53,7 +53,14 @@ public class CreatePaymentRequest {
         paymentRequest.setReference("REF1234");
 
         try {
-            // Set your account credentials on src/pagseguro-config.properties
+            
+        	/* Set your account credentials on src/pagseguro-config.properties authorizationCode
+			 * You can create an payment using an application credential and set an 
+			 * ApplicationCredentials applicationCredentials = PagSeguroConfig.getApplicationCredentials();
+             * applicationCredentials.setAuthorizationCode("your_authorizationCode");
+             * String paymentRequestCode = paymentRequest.register(applicationCredentials), onlyCheckoutCode);
+			 */
+        	
             String paymentRequestCode = paymentRequest.register(PagSeguroConfig.getAccountCredentials());
             System.out.println(paymentRequestCode);
 

@@ -36,7 +36,13 @@ public class ReceiveAuthorizationNotifications {
         Authorization authorization = null;
 
         try {
-
+        	
+        	/* Set your account credentials on src/pagseguro-config.properties
+			 * You can create an payment using an application credential and set an authorizationCode 
+			 * ApplicationCredentials applicationCredentials = PagSeguroConfig.getApplicationCredentials();
+             * applicationCredentials.setAuthorizationCode("your_authorizationCode");
+			 */
+        	
             authorization = NotificationService.checkAuthorization(PagSeguroConfig.getApplicationCredentials(),
                     notificationCode);
 

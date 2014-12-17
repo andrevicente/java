@@ -90,6 +90,13 @@ public class CreateTransactionUsingBoleto {
                 new BigDecimal("2500.00")));
 
         try {
+        	
+        	/* Set your account credentials on src/pagseguro-config.properties
+			 * You can create an payment using an application credential and set an authorizationCode 
+			 * ApplicationCredentials applicationCredentials = PagSeguroConfig.getApplicationCredentials();
+             * applicationCredentials.setAuthorizationCode("your_authorizationCode");
+			 */
+        	
             final AccountCredentials accountCredentials = PagSeguroConfig.getAccountCredentials();
 
             final Transaction transaction = TransactionService.createTransaction(accountCredentials, //
